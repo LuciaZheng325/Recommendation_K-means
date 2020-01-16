@@ -74,7 +74,8 @@ double getDist(Vect A, Vect B)  //Calculate the square of distance
 	return sim;
 }
 
-void getMinDis(vector<Vect> test,MDis Mindis[],Vect means[],vector<Vect> *ans)  //计算每个test投资人离簇的最短距离
+void getMinDis(vector<Vect> test,MDis Mindis[],Vect means[],vector<Vect> *ans) 
+ //Calculate the shortest distance between each investor and the cluster
 {
     int k;
     for (int i=0;i<test.size();i++)
@@ -96,7 +97,7 @@ void getMinDis(vector<Vect> test,MDis Mindis[],Vect means[],vector<Vect> *ans)  
     }
 }
 
-//计算每个簇的中心，平均距离表示
+// Calculate the center of each cluster by average distance
 Vect getMeansC(vector<Vect> t)
 {
 	int num = t.size();
@@ -121,8 +122,9 @@ Vect getMeansC(vector<Vect> t)
 	c.PBM = meansB / num;
 	return c;
 }
-//获取算法的准则函数值，当准则函数收敛时算法停止
-//means[NUM]就是簇的中心，求三个簇里的Vect和改簇means 的距离之和
+
+// Get the Criterion function value. The algorithm will stop when the Criterion function value converges
+
 double getE(vector<Vect> classes[], Vect means[])
 {
 	double sum = 0;
@@ -134,12 +136,12 @@ double getE(vector<Vect> classes[], Vect means[])
 	}
 	return sum;
 }
-//找新来的vect距离最近的中心
+
 int searchMinC(Vect t, Vect means[], int n, double *D)
 {
 	int c = 0;
 	double d = getDist(t, means[0]);
-	for (int i = 1; i<n; i++)//n?
+	for (int i = 1; i<n; i++)
 	{
 		double tmp = getDist(t, means[i]);
 		if (tmp < d)
@@ -156,19 +158,19 @@ void Find(vector<Vect> init, Vect means[])
 	srand(time(NULL));
 	double *D = new double[init.size()];
 	means[0] = init[rand() % init.size()];
-	for (int i = 1; i < NUM; i++)//一个一个找，后者以前者为标的
+	for (int i = 1; i < NUM; i++)
 	{
 		double sum = 0;
 		for (int j = 0; j < init.size(); j++)
 		{
-			searchMinC(init[j], means, i, D + j);//每找一个中心点，就存一下该元素和该中心点的距离到D里
+			searchMinC(init[j], means, i, D + j);
 			sum += D[j];
 		}
-		sum = rand() % (int)sum;//产生一个0-sum的随机数
+		sum = rand() % (int)sum;
 		for (int j = 0; j < init.size(); j++)
 		{
 			if ((sum -= D[j]) > 0) continue;
-			means[i] = init[j];//换中心点
+			means[i] = init[j];
 			break;
 		}
 	}
@@ -179,7 +181,7 @@ void kMeans(vector<Vect> init, vector<Vect> *ans,Vect *means)
 	vector<Vect> classes[NUM];
 	double newE, oldE = -1;
 	Find(init, means);
-	newE = getE(classes, means);  //计算当前准则函数值
+	newE = getE(classes, means); 
 	for (int i = 0; i<NUM; i++)
 		classes[i].clear();
 	while (fabs(newE - oldE) >= 1)
@@ -199,33 +201,31 @@ void kMeans(vector<Vect> init, vector<Vect> *ans,Vect *means)
 			classes[i].clear();
 	}
 
-	//输出最终结果
+
 	for (int i = 0; i<NUM; i++)
 	{
-		cout << "类" << i + 1 << ":" << endl;
+		cout << "Class" << i + 1 << ":" << endl;
 		for (int j = 0; j<ans[i].size(); j++)
 			cout << ans[i][j].name<< setw(8) << ans[i][j].LPM << setw(8) << ans[i][j].PVM << setw(8) << ans[i][j].PEM << setw(8) << ans[i][j].PTM << setw(8) << ans[i][j].PBM << endl;
 		cout << endl;
 	}
-	//每个类的中心点坐标
+	// output the coordinate of every cluster's center
 	for (int i = 0; i<NUM; i++)
 		cout << "means[" << i + 1 << "]: " << means[i].LPM << " " << means[i].PVM << " " << means[i].PEM << " " << means[i].PTM << " " << means[i].PBM << endl;
 }
 int main()
 {
-    /*
-    注意文件中一个人的名字不能出现空格，要不然会转成对应的ASCII值
-    */
+
 	string s;
 	MDis MinDis[53];
-	vector<Vect> test(53);     //存储test信息
-	vector<Vect> init(366);     //存储train信息
-	Program pg[3170],t[1029];       //pg是train投资项目的，t是test投资项目的
+	vector<Vect> test(53);     
+	vector<Vect> init(366);    
+	Program pg[3170],t[1029];       
     int m,Nu,j,cntp,cntt,cntpt;
     j=0;
 	fstream file("train.txt", ios::in);
 	if (!file) {
-		cout << "打开文件失败! 文件:" << "train.txt" << endl;
+		cout << "Error in file opening! File name:" << "train.txt" << endl;
 		return 0;
 	}
 	while (getline(file, s)) {
@@ -242,7 +242,7 @@ int main()
     j=0;
 	fstream f2("test.txt",ios::in);
     if (!f2) {
-		cout << "打开文件失败! 文件:" << "test.txt" << endl;
+		cout << "Error in file opening! File name:" << "test.txt" << endl;
 		return 0;
 	}
 	while (getline(f2, s)) {
@@ -259,9 +259,9 @@ int main()
     }*/
 
     j=0;
-	fstream f3("train投资项目.txt", ios::in);
+	fstream f3("train_investment_projects.txt", ios::in);
 	if (!f3) {
-		cout << "打开文件失败! 文件:" << "train投资项目.txt" << endl;
+		cout << "Error in file opening! File name:" << "train_investment_projects.txt" << endl;
 		return 0;
 	}
 	while (getline(f3, s)) {
@@ -275,9 +275,9 @@ int main()
     /*for (int i=0;i<pg.size();i++)
         cout<<pg[i].name<<" "<<pg[i].id<<endl;*/
     j=0;
-    fstream f4("test投资项目.txt", ios::in);
+    fstream f4("test_investment_projects.txt", ios::in);
 	if (!f4) {
-		cout << "打开文件失败! 文件:" << "test投资项目.txt" << endl;
+		cout << "Error in file opening! File name:" << "test_investment_projects.txt" << endl;
 		return 0;
 	}
 	while (getline(f4, s)) {
@@ -296,19 +296,19 @@ int main()
     getMinDis(test,MinDis,means,ans);
     for (int i=0;i<cntt;i++)
        sort(MinDis[i].dis,MinDis[i].dis+cntt,cmp1);
-    sort(pg,pg+cntp,cmp2);          //根据项目id从小到大排序
+    sort(pg,pg+cntp,cmp2);          
     sort(t,t+cntpt,cmp2);
-    int kt=0;                       //记录test中id的个数
-    for (int p=1;p<cntpt;p++)      //排序去重
+    int kt=0;                       
+    for (int p=1;p<cntpt;p++)      
         if (t[kt].id!=t[p].id)
         t[++kt].id=t[p].id;
-    //cout<<"\n"<<kt<<endl;       //已测试，正确
+    //cout<<"\n"<<kt<<endl;       
     for (int i=0;i<cntt;i++)
     {
-        printf("请输入第%d个test投资人的信息:\n",i+1);
-        cout<<"输入Nu以便查找对应的train投资人：";
+        printf("Please input the information of %d investor in test data set:\n",i+1);
+        cout<<"Input Nu to find the according investor in train set：";
 	    scanf("%d",&Nu);
-         int k=0;                        //k是项目的数量
+         int k=0;                        //k is the number of projects
        pg[k].cnt=0;
          for (int j=0;j<Nu;j++)
         if (pg[0].name==MinDis[i].dis[j].name)
@@ -316,7 +316,7 @@ int main()
             pg[0].cnt++;
             break;
         }
-    for (int p=1;p<cntp;p++)         //在Nu个投资人中对所有投资项目统计次数并去重
+    for (int p=1;p<cntp;p++)         
     {
          if (pg[p].id!=pg[k].id)
          {
@@ -331,9 +331,9 @@ int main()
             }
     }
     sort(pg,pg+cntp,cmp3);
-    cout<<"输入m以便找到Nu个投资人中投资数量最多的项目：";
+    cout<<"Input m to find the most invested projects among Nu investors：";
 	scanf("%d",&m);
-    cout<<"Nu个投资人投资数目最多的前m个项目的id是：\n";
+    cout<<"The id of m most invested projects among Nu investors are：\n";
     for (int i=0;i<m;i++)
         cout<<pg[i].id<<endl;
     double c=0;
@@ -347,7 +347,7 @@ int main()
           }
     }
        double ans=c/double(m);
-       cout<<"相似度是"<<ans<<endl;
+       cout<<"The similarity is:"<<ans<<endl;
     }
 
 	system("pause");
