@@ -1,0 +1,4 @@
+This is a personalized recommendation system based on K-means clustering.
+Data of train set and test set are all from a crowd-funding website.
+Using this program, I recommended equity crowd funding projects to over 3100 new investors based on historical data of previous investors' features and preferences, with up to 90% accuracy.
+The investor feature vector: UC=£¨LPM¡¢PVM¡¢PEM¡¢PTM¡¢PBM£©
